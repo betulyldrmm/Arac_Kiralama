@@ -1,0 +1,49 @@
+.car-list {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.result-count {
+    color: var(--color-muted);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.car-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.car-grid li {
+    display: flex;
+}
+
+.empty {
+    background: var(--color-surface);
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius);
+    padding: 2rem 1.25rem;
+    text-align: center;
+}
+
+.empty-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.empty p:not(.empty-title) {
+    color: var(--color-muted);
+}
+
+@media (max-width: 860px) {
+    .car-list {
+        grid-template-columns: 1fr;
+    }
+}

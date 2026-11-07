@@ -1,0 +1,55 @@
+PROJE DOKÜMANTASYONU
+====================
+
+Proje adı   : Araç Kiralama ve Rezervasyon Uygulaması
+Teknoloji   : Blazor WebAssembly (Standalone), .NET 8, C#
+Ders / Ödev : Vize Ödevi
+
+GRUP ÜYELERİ
+------------
+1. Öğrenci No : ____________________
+   Ad Soyad   : ____________________
+
+2. Öğrenci No : ____________________
+   Ad Soyad   : ____________________
+
+GÖREV DAĞILIMI
+--------------
+(Aşağıdaki maddeler önerilen iş bölümüdür. Teslim etmeden önce her üyenin GERÇEKTE yaptığı
+işlere göre düzenleyin; yapılmayan işleri silin, yapılan ek işleri ekleyin.)
+
+Ortak (iki üye birlikte):
+- Veri modellerinin belirlenmesi (Models/Car.cs, CarBooking.cs, CustomerInfo.cs, CarFilter.cs, RentalExtra.cs, BookingStatus.cs)
+- Kiralama kurallarının belirlenmesi (Services/RentalRules.cs): gün sayısı, fiyat formülü, tarih sınırları
+- Servis metot imzalarının belirlenmesi (CarService, BookingService, RentalState)
+- Uçtan uca test ve anlatım videosu
+
+1. Üye: ____________________
+- cars.json verisi ve araç görselleri (wwwroot/data, wwwroot/images)
+- CarService: HttpClient ile cars.json'ın asenkron yüklenmesi ve hata mesajları
+- /cars sayfası (Pages/Cars.razor)
+- CarList, CarFilterPanel, CarCard, CarImage bileşenleri ve scoped CSS dosyaları
+- RentalSummary bileşeni ve anlık fiyat hesabı
+- Genel düzen (Layout/MainLayout) ve ortak tema (wwwroot/css/app.css)
+
+2. Üye: ____________________
+- BookingService: localStorage'a kayıt, çakışma kontrolü, iptal, rezervasyon kodu üretimi
+- RentalState: sayfalar arası paylaşılan seçimler (scoped servis)
+- /cars/{id}/rent sayfası (Pages/Rent.razor)
+- /my-bookings sayfası (Pages/MyBookings.razor)
+- RentalOptions, CustomerForm, BookingCard bileşenleri ve scoped CSS dosyaları
+- Form doğrulama kuralları (CustomerInfo öznitelikleri)
+
+ÇALIŞMAYAN / EKSİK İŞLEVLER
+---------------------------
+(Videoda ve burada açıkça belirtin. Yoksa "Yok" yazın.)
+____________________
+
+VİDEO BAĞLANTISI
+----------------
+____________________
+
+YAPAY ZEKÂ KULLANIMI
+--------------------
+(Ödev yönergesi yapay zekâ kullanımına izin vermektedir. Nasıl kullandığınızı kısaca belirtebilirsiniz.)
+____________________

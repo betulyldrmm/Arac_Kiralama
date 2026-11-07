@@ -1,0 +1,140 @@
+@page "/my-bookings"
+@inject BookingService BookingService
+@inject CarService CarService
+@inject RentalState State
+
+<PageTitle>Rezervasyonlarım · Araç Kiralama</PageTitle>
+
+<h1>Rezervasyonlarım</h1>
+<p class="lead">
+    Kayıtlar bu tarayıcının yerel depolamasında (localStorage) tutulur; sayfayı yenileseniz de korunur.
+</p>
+
+@* Ekran okuyucular iptal sonucunu duyabilsin diye bu alan her zaman sayfada bulunur. *@
+<div class="status-region" role="status" aria-live="polite">
+    @if (statusMessage is not null)
+    {
+        <div class="alert alert-success">@statusMessage</div>
+    }
+</div>
+
+@if (isLoading)
+{
+    <p class="loading" role="status">Rezervasyonlar yükleniyor…</p>
+}
+else
+{
+    @if (storageWarning is not null)
+    {
+        <div class="alert alert-warning" role="alert">@storageWarning</div>
+    }
+    @if (carWarning is not null)
+    {
+        <div class="alert alert-warning" role="alert">@carWarning</div>
+    }
+    @if (errorMessage is not null)
+    {
+        <div class="alert alert-error" role="alert">@errorMessage</div>
+    }
+
+    @if (LastBooking is not null)
+    {
+        <section class="confirmation" aria-labelledby="confirmation-title">
+            <div class="alert alert-success">
+                <h2 id="confirmation-title">Rezervasyonunuz oluşturuldu</h2>
+                <p>Rezervasyon kodunuz <strong>@LastBooking.Id</strong>. Özet aşağıdadır.</p>
+            </div>
+            <BookingCard Booking="LastBooking" Car="FindCar(LastBooking.CarId)" Highlight="true" ShowActions="false" />
+        </section>
+    }
+
+    <section class="all-bookings" aria-labelledby="all-bookings-title">
+        <h2 id="all-bookings-title">Tüm rezervasyonlar (@bookings.Count)</h2>
+        <p class="help">
+            Yalnızca teslim alma tarihi henüz gelmemiş ve iptal edilmemiş rezervasyonlar iptal edilebilir.
+            İptal edilen kayıtlar silinmez, “İptal edildi” olarak görünür ve tarihleri yeniden kiralanabilir.
+        </p>
+
+        @if (bookings.Count == 0)
+        {
+            <div class="empty">
+                <p class="empty-title">Henüz rezervasyonunuz yok.</p>
+                <a class="btn btn-primary" href="cars">Araçlara göz at</a>
+            </div>
+        }
+        else
+        {
+            <ul class="booking-list">
+                @* En yeni rezervasyon en üstte. *@
+                @foreach (var booking in bookings.AsEnumerable().Reverse())
+                {
+                    <li @key="booking.Id">
+                        <BookingCard Booking="booking" Car="FindCar(booking.CarId)" OnCancel="CancelAsync" />
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+}
+
+@code {
+    private List<CarBooking> bookings = new();
+    private readonly Dictionary<string, Car> carsById = new(StringComparer.OrdinalIgnoreCase);
+    private string? lastBookingId;
+    private bool isLoading = true;
+    private string? storageWarning;
+    private string? carWarning;
+    private string? errorMessage;
+    private string? statusMessage;
+
+    private CarBooking? LastBooking => lastBookingId is null
+        ? null
+        : bookings.FirstOrDefault(b => b.Id == lastBookingId);
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Rent sayfası rezervasyonu tamamladıysa kodu scoped servisten al ve bir kez göster.
+        lastBookingId = State.LastBookingId;
+        State.LastBookingId = null;
+
+        // Blazor WebAssembly'de prerender olmadığı için localStorage'a burada erişmek güvenlidir.
+        await LoadBookingsAsync();
+
+        try
+        {
+            foreach (var car in await CarService.GetCarsAsync())
+                carsById.TryAdd(car.Id, car);
+        }
+        catch (InvalidOperationException ex)
+        {
+            carWarning = $"Araç bilgileri yüklenemedi; rezervasyonlar araç koduyla gösteriliyor. ({ex.Message})";
+        }
+
+        isLoading = false;
+    }
+
+    private async Task LoadBookingsAsync()
+    {
+        bookings = await BookingService.GetBookingsAsync();
+        storageWarning = BookingService.StorageWarning;
+    }
+
+    private Car? FindCar(string carId) => carsById.TryGetValue(carId, out var car) ? car : null;
+
+    private async Task CancelAsync(CarBooking booking)
+    {
+        statusMessage = null;
+        errorMessage = null;
+        try
+        {
+            await BookingService.CancelAsync(booking.Id);
+            statusMessage = $"{booking.Id} kodlu rezervasyon iptal edildi.";
+        }
+        catch (InvalidOperationException ex)
+        {
+            errorMessage = ex.Message;
+        }
+
+        await LoadBookingsAsync();
+    }
+}

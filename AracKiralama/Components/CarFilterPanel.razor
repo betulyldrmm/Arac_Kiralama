@@ -1,0 +1,106 @@
+@using System.Globalization
+
+@* Marka, kategori, yakıt, vites ve günlük fiyat aralığı filtreleri.
+   Her değişiklikte "Filter with { ... }" ile yeni bir filtre üretilip FilterChanged ile üst bileşene gönderilir. *@
+
+<section class="filters" aria-labelledby="filters-title">
+    <div class="filters-head">
+        <h2 id="filters-title">Filtrele</h2>
+        <button type="button" class="btn btn-link" @onclick="ClearAsync" disabled="@Filter.IsEmpty">Temizle</button>
+    </div>
+
+    <div class="filters-grid">
+        <div class="field">
+            <label for="filter-brand">Marka</label>
+            <select id="filter-brand" value="@Filter.Brand"
+                    @onchange="@(e => ChangeAsync(Filter with { Brand = ReadText(e) }))">
+                <option value="">Tümü</option>
+                @foreach (var item in Brands)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="filter-category">Kategori</label>
+            <select id="filter-category" value="@Filter.Category"
+                    @onchange="@(e => ChangeAsync(Filter with { Category = ReadText(e) }))">
+                <option value="">Tümü</option>
+                @foreach (var item in Categories)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="filter-fuel">Yakıt</label>
+            <select id="filter-fuel" value="@Filter.FuelType"
+                    @onchange="@(e => ChangeAsync(Filter with { FuelType = ReadText(e) }))">
+                <option value="">Tümü</option>
+                @foreach (var item in FuelTypes)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="filter-transmission">Vites</label>
+            <select id="filter-transmission" value="@Filter.Transmission"
+                    @onchange="@(e => ChangeAsync(Filter with { Transmission = ReadText(e) }))">
+                <option value="">Tümü</option>
+                @foreach (var item in Transmissions)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
+
+        <fieldset class="price-range">
+            <legend>Günlük ücret (TL)</legend>
+            <div class="price-inputs">
+                <div class="field">
+                    <label for="filter-min-price">En az</label>
+                    <input id="filter-min-price" type="number" min="0" step="50" inputmode="numeric" placeholder="ör. 1000"
+                           value="@PriceText(Filter.MinPrice)"
+                           @oninput="@(e => ChangeAsync(Filter with { MinPrice = ReadPrice(e) }))" />
+                </div>
+                <div class="field">
+                    <label for="filter-max-price">En çok</label>
+                    <input id="filter-max-price" type="number" min="0" step="50" inputmode="numeric" placeholder="ör. 3000"
+                           value="@PriceText(Filter.MaxPrice)"
+                           @oninput="@(e => ChangeAsync(Filter with { MaxPrice = ReadPrice(e) }))" />
+                </div>
+            </div>
+            @if (Filter.HasInvalidPriceRange)
+            {
+                <p class="field-error" role="alert">En az ücret, en çok ücretten büyük olamaz.</p>
+            }
+        </fieldset>
+    </div>
+</section>
+
+@code {
+    [Parameter] public CarFilter Filter { get; set; } = new();
+    [Parameter] public EventCallback<CarFilter> FilterChanged { get; set; }
+    [Parameter] public IReadOnlyList<string> Brands { get; set; } = Array.Empty<string>();
+    [Parameter] public IReadOnlyList<string> Categories { get; set; } = Array.Empty<string>();
+    [Parameter] public IReadOnlyList<string> FuelTypes { get; set; } = Array.Empty<string>();
+    [Parameter] public IReadOnlyList<string> Transmissions { get; set; } = Array.Empty<string>();
+
+    private Task ChangeAsync(CarFilter newFilter) => FilterChanged.InvokeAsync(newFilter);
+
+    private Task ClearAsync() => FilterChanged.InvokeAsync(new CarFilter());
+
+    private static string ReadText(ChangeEventArgs e) => e.Value?.ToString() ?? "";
+
+    // Tarayıcı sayı kutusunun değerini her zaman "1500" veya "1500.5" biçiminde gönderir (kültürden bağımsız).
+    private static decimal? ReadPrice(ChangeEventArgs e) =>
+        decimal.TryParse(e.Value?.ToString(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var value)
+            ? value
+            : null;
+
+    private static string PriceText(decimal? value) => value?.ToString(CultureInfo.InvariantCulture) ?? "";
+}

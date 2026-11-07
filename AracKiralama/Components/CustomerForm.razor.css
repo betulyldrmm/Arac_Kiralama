@@ -1,0 +1,41 @@
+.customer-form {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.1rem;
+    box-shadow: var(--shadow);
+}
+
+.help {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+}
+
+.field {
+    display: grid;
+    gap: 0.3rem;
+    margin-bottom: 0.9rem;
+}
+
+.error-slot {
+    min-height: 0;
+}
+
+/* Bir alanda birden fazla kural bozulursa yalnızca ilk hata mesajı gösterilsin.
+   ValidationMessage kendi <div> etiketlerini ürettiği için ::deep gerekir. */
+.error-slot ::deep .validation-message + .validation-message {
+    display: none;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+}
+
+@media (max-width: 480px) {
+    .actions .btn {
+        width: 100%;
+    }
+}

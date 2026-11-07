@@ -1,0 +1,69 @@
+@* Araç kartlarını ve filtre panelini gösterir. Filtre durumunu kendisi saklamaz: üst bileşenden
+   [Parameter] olarak alır, değişikliği FilterChanged ile geri bildirir. *@
+
+<div class="car-list">
+    <CarFilterPanel Filter="Filter"
+                    FilterChanged="FilterChanged"
+                    Brands="brands"
+                    Categories="categories"
+                    FuelTypes="fuelTypes"
+                    Transmissions="transmissions" />
+
+    <div class="results">
+        @{
+            var filtered = Cars.Where(Filter.Matches).ToList();
+        }
+
+        <p class="result-count" role="status">@filtered.Count / @Cars.Count araç gösteriliyor</p>
+
+        @if (filtered.Count == 0)
+        {
+            <div class="empty">
+                <p class="empty-title">Seçtiğiniz filtrelere uygun araç bulunamadı.</p>
+                <p>Filtrelerden birini değiştirin veya hepsini temizleyin.</p>
+                <button type="button" class="btn btn-secondary" @onclick="ClearFiltersAsync">Filtreleri temizle</button>
+            </div>
+        }
+        else
+        {
+            <ul class="car-grid">
+                @foreach (var car in filtered)
+                {
+                    <li @key="car.Id">
+                        <CarCard Car="car" OnSelect="OnCarSelected" />
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<Car> Cars { get; set; } = Array.Empty<Car>();
+    [Parameter] public CarFilter Filter { get; set; } = new();
+    [Parameter] public EventCallback<CarFilter> FilterChanged { get; set; }
+    [Parameter] public EventCallback<Car> OnCarSelected { get; set; }
+
+    // Filtre seçenekleri sabit yazılmaz, cars.json'daki değerlerden üretilir.
+    private List<string> brands = new();
+    private List<string> categories = new();
+    private List<string> fuelTypes = new();
+    private List<string> transmissions = new();
+
+    protected override void OnParametersSet()
+    {
+        brands = DistinctValues(car => car.Brand);
+        categories = DistinctValues(car => car.Category);
+        fuelTypes = DistinctValues(car => car.FuelType);
+        transmissions = DistinctValues(car => car.Transmission);
+    }
+
+    private List<string> DistinctValues(Func<Car, string> selector) =>
+        Cars.Select(selector)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Distinct()
+            .OrderBy(value => value)
+            .ToList();
+
+    private Task ClearFiltersAsync() => FilterChanged.InvokeAsync(new CarFilter());
+}

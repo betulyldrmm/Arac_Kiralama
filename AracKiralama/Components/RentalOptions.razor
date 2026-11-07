@@ -1,0 +1,92 @@
+@using System.Globalization
+
+@* Tarih seçimi, kiralama gün sayısı ve ek hizmet tercihleri.
+   Değerleri [Parameter] ile alır; her değişikliği EventCallback ile üst bileşene (Rent sayfası) bildirir.
+   Asıl durum (seçilen tarihler ve hizmetler) scoped RentalState servisinde tutulur. *@
+
+<section class="rental-options" aria-labelledby="options-title">
+    <h2 id="options-title">Kiralama seçenekleri</h2>
+
+    <fieldset class="group" disabled="@Disabled">
+        <legend>Tarihler</legend>
+
+        <div class="date-grid">
+            <div class="field">
+                <label for="pickup-date">Teslim alma tarihi</label>
+                <input id="pickup-date" type="date"
+                       min="@ToInputValue(DateTime.Today)"
+                       value="@ToInputValue(PickupDate)"
+                       @onchange="HandlePickupChangeAsync"
+                       aria-describedby="date-rule" />
+            </div>
+            <div class="field">
+                <label for="return-date">İade tarihi</label>
+                <input id="return-date" type="date"
+                       min="@ToInputValue((PickupDate ?? DateTime.Today).AddDays(1))"
+                       value="@ToInputValue(ReturnDate)"
+                       @onchange="HandleReturnChangeAsync"
+                       aria-describedby="date-rule" />
+            </div>
+        </div>
+
+        <p id="date-rule" class="help">
+            Kiralama süresi iki tarih arasındaki gün farkıdır (ör. 10–13 Kasım = 3 gün).
+            İade günü, aynı aracın bir başka kiralaması için teslim günü olabilir.
+        </p>
+
+        @if (DateError is not null)
+        {
+            <p class="field-error" role="alert">@DateError</p>
+        }
+        else
+        {
+            <p class="days" role="status">Kiralama süresi: <strong>@Days gün</strong></p>
+        }
+    </fieldset>
+
+    <fieldset class="group" disabled="@Disabled">
+        <legend>Ek hizmetler <span class="optional">(isteğe bağlı)</span></legend>
+        <ul class="extras">
+            @foreach (var extra in RentalExtraCatalog.All)
+            {
+                var inputId = $"extra-{extra.Id}";
+                var isSelected = SelectedExtraIds.Contains(extra.Id);
+                <li class="@(isSelected ? "selected" : "")">
+                    <input type="checkbox" id="@inputId" checked="@isSelected"
+                           @onchange="() => OnExtraToggled.InvokeAsync(extra.Id)" />
+                    <label for="@inputId">
+                        <span class="extra-name">@extra.Name</span>
+                        <span class="extra-desc">@extra.Description</span>
+                    </label>
+                    <span class="extra-price">+@Formatters.Money(extra.DailyPrice) / gün</span>
+                </li>
+            }
+        </ul>
+    </fieldset>
+</section>
+
+@code {
+    [Parameter] public DateTime? PickupDate { get; set; }
+    [Parameter] public DateTime? ReturnDate { get; set; }
+    [Parameter] public IReadOnlyCollection<string> SelectedExtraIds { get; set; } = Array.Empty<string>();
+    [Parameter] public int Days { get; set; }
+    [Parameter] public string? DateError { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+
+    [Parameter] public EventCallback<DateTime?> PickupDateChanged { get; set; }
+    [Parameter] public EventCallback<DateTime?> ReturnDateChanged { get; set; }
+    [Parameter] public EventCallback<string> OnExtraToggled { get; set; }
+
+    private Task HandlePickupChangeAsync(ChangeEventArgs e) => PickupDateChanged.InvokeAsync(ParseDate(e.Value?.ToString()));
+
+    private Task HandleReturnChangeAsync(ChangeEventArgs e) => ReturnDateChanged.InvokeAsync(ParseDate(e.Value?.ToString()));
+
+    // <input type="date"> değeri her zaman yyyy-MM-dd biçimindedir; boşsa tarih seçilmemiş demektir.
+    private static DateTime? ParseDate(string? value) =>
+        DateTime.TryParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date)
+            ? date
+            : null;
+
+    private static string ToInputValue(DateTime? date) =>
+        date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? "";
+}

@@ -1,0 +1,72 @@
+@* Müşteri bilgileri formu. EditForm + DataAnnotationsValidator, CustomerInfo modelindeki
+   [Required], [StringLength], [EmailAddress], [Phone] ve [RegularExpression] kurallarını uygular.
+   Form yalnızca bütün alanlar geçerliyse OnValidSubmit'i çalıştırır ve bilgiler OnSubmit (EventCallback) ile gönderilir. *@
+
+<div class="customer-form">
+    <h2 id="customer-form-title">Müşteri bilgileri</h2>
+    <p class="help">Rezervasyonu tamamlamak için bütün alanları doldurun.</p>
+
+    <EditForm Model="customer" OnValidSubmit="HandleValidSubmitAsync" aria-labelledby="customer-form-title">
+        <DataAnnotationsValidator />
+
+        <div class="field">
+            <label for="customer-name">Ad soyad</label>
+            <InputText id="customer-name" @ref="nameInput" @bind-Value="customer.CustomerName"
+                       autocomplete="name" placeholder="ör. Ayşe Yılmaz" aria-describedby="customer-name-error" />
+            <div id="customer-name-error" class="error-slot" aria-live="polite">
+                <ValidationMessage For="() => customer.CustomerName" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="customer-email">E-posta</label>
+            <InputText id="customer-email" @bind-Value="customer.Email"
+                       inputmode="email" autocomplete="email" placeholder="ör. ayse@ornek.com" aria-describedby="customer-email-error" />
+            <div id="customer-email-error" class="error-slot" aria-live="polite">
+                <ValidationMessage For="() => customer.Email" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="customer-phone">Telefon</label>
+            <InputText id="customer-phone" type="tel" @bind-Value="customer.Phone"
+                       autocomplete="tel" placeholder="05XX XXX XX XX" aria-describedby="customer-phone-error" />
+            <div id="customer-phone-error" class="error-slot" aria-live="polite">
+                <ValidationMessage For="() => customer.Phone" />
+            </div>
+        </div>
+
+        @if (IsDisabled)
+        {
+            <p class="field-error">Rezervasyonu onaylamadan önce tarih seçimindeki sorunu düzeltin.</p>
+        }
+
+        <div class="actions">
+            <button type="submit" class="btn btn-primary btn-lg" disabled="@(IsBusy || IsDisabled)">
+                @(IsBusy ? "Kaydediliyor…" : "Rezervasyonu onayla")
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="OnCancel" disabled="@IsBusy">Vazgeç</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public EventCallback<CustomerInfo> OnSubmit { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public bool IsBusy { get; set; }
+    [Parameter] public bool IsDisabled { get; set; }
+
+    private readonly CustomerInfo customer = new();
+    private InputText? nameInput;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Form açılınca klavye kullanıcısı doğrudan ilk alana gelsin.
+        if (firstRender && nameInput?.Element is ElementReference element)
+        {
+            await element.FocusAsync();
+        }
+    }
+
+    private Task HandleValidSubmitAsync() => OnSubmit.InvokeAsync(customer);
+}

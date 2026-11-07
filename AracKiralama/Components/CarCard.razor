@@ -1,0 +1,54 @@
+@* Tek bir aracın kartı. Kullanıcı "Kirala"ya basınca araç OnSelect (EventCallback) ile üst bileşene bildirilir. *@
+
+<article class="car-card @(Car.IsAvailable ? "" : "is-unavailable")">
+    <div class="media">
+        <CarImage Car="Car" />
+        <span class="badge badge-category">@Car.Category</span>
+        @if (!Car.IsAvailable)
+        {
+            <span class="badge badge-unavailable">Müsait değil</span>
+        }
+    </div>
+
+    <div class="content">
+        <h3 class="title">@Car.Brand <span class="model">@Car.Model</span></h3>
+
+        <dl class="specs">
+            <div><dt>Yakıt</dt><dd>@Car.FuelType</dd></div>
+            <div><dt>Vites</dt><dd>@Car.Transmission</dd></div>
+            <div><dt>Koltuk</dt><dd>@Car.Seats</dd></div>
+        </dl>
+
+        <div class="footer">
+            <p class="price">
+                <span class="amount">@Formatters.Money(Car.DailyPrice)</span>
+                <span class="unit">/ gün</span>
+            </p>
+            @if (Car.IsAvailable)
+            {
+                <button type="button" class="btn btn-primary" @onclick="SelectAsync"
+                        aria-label="@($"{Car.Brand} {Car.Model} kirala")">
+                    Kirala
+                </button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-primary" disabled aria-describedby="@NoteId">Kirala</button>
+            }
+        </div>
+
+        @if (!Car.IsAvailable)
+        {
+            <p id="@NoteId" class="unavailable-note">Bu araç şu anda kiralamaya uygun değil.</p>
+        }
+    </div>
+</article>
+
+@code {
+    [Parameter, EditorRequired] public Car Car { get; set; } = default!;
+    [Parameter] public EventCallback<Car> OnSelect { get; set; }
+
+    private string NoteId => $"unavailable-note-{Car.Id}";
+
+    private Task SelectAsync() => OnSelect.InvokeAsync(Car);
+}

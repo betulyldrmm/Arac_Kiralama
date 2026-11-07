@@ -1,0 +1,27 @@
+.car-image {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    background: var(--color-surface-alt);
+}
+
+.fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    background: linear-gradient(135deg, #e8edf6, #d9e1ef);
+    color: #5d6b82;
+}
+
+.fallback-icon {
+    width: 38%;
+    max-width: 140px;
+    height: auto;
+}
+
+.fallback-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+}

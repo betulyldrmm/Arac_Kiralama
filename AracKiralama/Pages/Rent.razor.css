@@ -1,0 +1,133 @@
+.back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+.page-title {
+    margin-bottom: 1rem;
+}
+
+.page-title .model {
+    font-weight: 500;
+    color: var(--color-muted);
+}
+
+/* Masaüstü: solda detay → seçenekler → işlemler, sağda sabit fiyat özeti.
+   Mobil: tek sütun; sıra HTML sırasıyla aynıdır (detay, seçenekler, özet, işlemler). */
+.rent-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-areas:
+        "detail  summary"
+        "options summary"
+        "actions summary";
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.area-detail {
+    grid-area: detail;
+}
+
+.area-options {
+    grid-area: options;
+}
+
+.area-summary {
+    grid-area: summary;
+    position: sticky;
+    top: 5rem;
+}
+
+.area-actions {
+    grid-area: actions;
+}
+
+.car-detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 1.25rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.detail-image {
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.detail-specs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem 1rem;
+    margin: 0;
+    align-content: center;
+}
+
+.detail-specs dt {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+}
+
+.detail-specs dd {
+    margin: 0;
+    font-weight: 700;
+}
+
+.detail-specs .price {
+    color: var(--color-accent);
+    font-size: 1.15rem;
+}
+
+.detail-specs .ok {
+    color: var(--color-success);
+}
+
+.detail-specs .not-ok {
+    color: var(--color-danger);
+}
+
+.complete-button {
+    width: 100%;
+}
+
+.hint {
+    margin: 0.5rem 0 0;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.submit-error {
+    margin-top: 1rem;
+}
+
+@media (max-width: 960px) {
+    .rent-layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "detail"
+            "options"
+            "summary"
+            "actions";
+    }
+
+    .area-summary {
+        position: static;
+    }
+}
+
+@media (max-width: 600px) {
+    .car-detail {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

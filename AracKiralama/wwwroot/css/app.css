@@ -1,0 +1,309 @@
+/*
+  Ortak tema: renk değişkenleri, temel yazı, butonlar, uyarı kutuları ve form kontrolleri.
+  Bileşene özel düzen ve görünüm, her bileşenin kendi .razor.css (scoped CSS) dosyasındadır.
+*/
+
+:root {
+    --color-bg: #f4f6fa;
+    --color-surface: #ffffff;
+    --color-surface-alt: #eef2f8;
+    --color-border: #d3dae6;
+    --color-text: #172033;
+    --color-muted: #4a5568;
+    --color-primary: #1f4fd1;
+    --color-primary-hover: #173ea6;
+    --color-primary-soft: #e7eeff;
+    --color-accent: #9a4500;
+    --color-success: #13692c;
+    --color-success-bg: #e5f4e9;
+    --color-warning: #7a4300;
+    --color-warning-bg: #fff3dc;
+    --color-danger: #b42318;
+    --color-danger-bg: #fdecea;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 6px 16px rgba(16, 24, 40, 0.06);
+    --font: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--color-text);
+    background: var(--color-bg);
+}
+
+h1, h2, h3 {
+    line-height: 1.25;
+    margin: 0 0 0.5rem;
+}
+
+h1 {
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+}
+
+h2 {
+    font-size: 1.2rem;
+}
+
+h3 {
+    font-size: 1.05rem;
+}
+
+p {
+    margin: 0 0 0.75rem;
+}
+
+a {
+    color: var(--color-primary);
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+/* Klavye ile gezinirken odak her zaman görünür olsun. */
+:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Sayfa değişince başlığa verilen programatik odak çerçeve göstermesin. */
+h1:focus {
+    outline: none;
+}
+
+/* ---------- Butonlar ---------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    padding: 0.55rem 1.1rem;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: 1;
+    background: #e4e7ec;
+    border-color: #e4e7ec;
+    color: #5b6472;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+}
+
+.btn-secondary {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+    color: var(--color-text);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    border-color: var(--color-muted);
+}
+
+.btn-danger {
+    background: var(--color-danger);
+    color: #fff;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #8f1c13;
+}
+
+.btn-danger-outline {
+    background: var(--color-surface);
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+}
+
+.btn-danger-outline:hover:not(:disabled) {
+    background: var(--color-danger-bg);
+}
+
+.btn-link {
+    min-height: auto;
+    padding: 0.25rem 0.5rem;
+    background: none;
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.btn-link:disabled {
+    background: none;
+    border-color: transparent;
+    color: #6b7280;
+    text-decoration: none;
+}
+
+.btn-lg {
+    min-height: 3.1rem;
+    padding: 0.7rem 1.5rem;
+    font-size: 1.05rem;
+}
+
+/* ---------- Uyarı kutuları ---------- */
+.alert {
+    padding: 0.9rem 1rem;
+    border-radius: var(--radius-sm);
+    border-left: 5px solid;
+    margin: 0 0 1rem;
+}
+
+.alert > :last-child {
+    margin-bottom: 0;
+}
+
+.alert-error {
+    background: var(--color-danger-bg);
+    border-color: var(--color-danger);
+    color: #7a1610;
+}
+
+.alert-warning {
+    background: var(--color-warning-bg);
+    border-color: #d18a00;
+    color: var(--color-warning);
+}
+
+.alert-success {
+    background: var(--color-success-bg);
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+
+.alert-info {
+    background: var(--color-primary-soft);
+    border-color: var(--color-primary);
+    color: #153a99;
+}
+
+.field-error {
+    color: var(--color-danger);
+    font-weight: 600;
+    font-size: 0.925rem;
+    margin: 0.4rem 0 0;
+}
+
+.loading {
+    color: var(--color-muted);
+    padding: 2rem 0;
+    text-align: center;
+}
+
+/* ---------- Form kontrolleri ---------- */
+label {
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+input:not([type]),
+select {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1.5px solid #9aa5b8;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text);
+}
+
+input:disabled,
+select:disabled {
+    background: var(--color-surface-alt);
+    color: #5b6472;
+}
+
+input[type="checkbox"] {
+    width: 1.2rem;
+    height: 1.2rem;
+    accent-color: var(--color-primary);
+}
+
+/* Blazor doğrulama sınıfları (InputText tarafından eklenir). */
+input.invalid {
+    border-color: var(--color-danger);
+    background: #fffafa;
+}
+
+input.modified.valid {
+    border-color: var(--color-success);
+}
+
+.validation-message {
+    color: var(--color-danger);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+/* ---------- Diğer ---------- */
+.app-loading {
+    display: grid;
+    place-items: center;
+    min-height: 60vh;
+    color: var(--color-muted);
+    font-size: 1.1rem;
+}
+
+#blazor-error-ui {
+    display: none;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    width: 100%;
+    padding: 0.75rem 1.25rem;
+    background: #fff4cc;
+    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.2);
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    top: 0.6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+}

@@ -1,0 +1,62 @@
+@page "/cars"
+@inject CarService CarService
+@inject RentalState State
+@inject NavigationManager Nav
+
+<PageTitle>Araçlar · Araç Kiralama</PageTitle>
+
+<section class="intro">
+    <h1>Kiralık araçlar</h1>
+    <p>Aracınızı filtreleyin, tarih ve ek hizmetleri seçin; fiyatı anında görün.</p>
+</section>
+
+@if (isLoading)
+{
+    <p class="loading" role="status">Araçlar yükleniyor…</p>
+}
+else if (loadError is not null)
+{
+    <div class="alert alert-error" role="alert">
+        <p><strong>Araçlar yüklenemedi.</strong> @loadError</p>
+        <button type="button" class="btn btn-secondary" @onclick="LoadCarsAsync">Tekrar dene</button>
+    </div>
+}
+else
+{
+    @* CarList'e veri [Parameter] ile gider; filtre değişikliği ve araç seçimi EventCallback ile geri gelir. *@
+    <CarList Cars="cars"
+             Filter="State.Filter"
+             FilterChanged="OnFilterChanged"
+             OnCarSelected="GoToRent" />
+}
+
+@code {
+    private IReadOnlyList<Car> cars = Array.Empty<Car>();
+    private bool isLoading = true;
+    private string? loadError;
+
+    protected override Task OnInitializedAsync() => LoadCarsAsync();
+
+    private async Task LoadCarsAsync()
+    {
+        isLoading = true;
+        loadError = null;
+        try
+        {
+            cars = await CarService.GetCarsAsync();
+        }
+        catch (InvalidOperationException ex)
+        {
+            loadError = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    // Filtreler scoped serviste tutulur; araç sayfasından geri dönüldüğünde korunur.
+    private void OnFilterChanged(CarFilter filter) => State.Filter = filter;
+
+    private void GoToRent(Car car) => Nav.NavigateTo($"cars/{Uri.EscapeDataString(car.Id)}/rent");
+}

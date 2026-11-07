@@ -1,0 +1,235 @@
+@page "/cars/{Id}/rent"
+@inject CarService CarService
+@inject BookingService BookingService
+@inject RentalState State
+@inject NavigationManager Nav
+
+<PageTitle>@(car is null ? "Araç kirala" : $"{car.Brand} {car.Model} kirala") · Araç Kiralama</PageTitle>
+
+<a class="back-link" href="cars">← Araç listesine dön</a>
+
+@if (isLoading)
+{
+    <p class="loading" role="status">Araç bilgileri yükleniyor…</p>
+}
+else if (loadError is not null)
+{
+    <div class="alert alert-error" role="alert">
+        <p><strong>Araç bilgileri yüklenemedi.</strong> @loadError</p>
+        <button type="button" class="btn btn-secondary" @onclick="LoadAsync">Tekrar dene</button>
+    </div>
+}
+else if (car is null)
+{
+    <div class="alert alert-error" role="alert">
+        <h1>Araç bulunamadı</h1>
+        <p>"@Id" kimliğine sahip bir araç yok. Bağlantıyı kontrol edin veya listeden bir araç seçin.</p>
+        <a class="btn btn-primary" href="cars">Araçları görüntüle</a>
+    </div>
+}
+else
+{
+    <h1 class="page-title">@car.Brand <span class="model">@car.Model</span></h1>
+
+    <div class="rent-layout">
+        <section class="area-detail car-detail" aria-label="Araç bilgileri">
+            <div class="detail-image">
+                <CarImage Car="car" />
+            </div>
+            <dl class="detail-specs">
+                <div><dt>Kategori</dt><dd>@car.Category</dd></div>
+                <div><dt>Yakıt</dt><dd>@car.FuelType</dd></div>
+                <div><dt>Vites</dt><dd>@car.Transmission</dd></div>
+                <div><dt>Koltuk</dt><dd>@car.Seats</dd></div>
+                <div><dt>Günlük ücret</dt><dd class="price">@Formatters.Money(car.DailyPrice)</dd></div>
+                <div>
+                    <dt>Durum</dt>
+                    <dd class="@(car.IsAvailable ? "ok" : "not-ok")">@(car.IsAvailable ? "Müsait" : "Müsait değil")</dd>
+                </div>
+            </dl>
+        </section>
+
+        <div class="area-options">
+            @if (!car.IsAvailable)
+            {
+                <div class="alert alert-warning" role="alert">
+                    <strong>Bu araç şu anda kiralamaya uygun değil.</strong>
+                    Kiralama işlemi kapalıdır; lütfen listeden başka bir araç seçin.
+                </div>
+            }
+
+            <RentalOptions PickupDate="State.PickupDate"
+                           ReturnDate="State.ReturnDate"
+                           SelectedExtraIds="State.ExtraIds"
+                           Days="Days"
+                           DateError="@DateError"
+                           Disabled="@(!car.IsAvailable)"
+                           PickupDateChanged="OnPickupDateChangedAsync"
+                           ReturnDateChanged="OnReturnDateChangedAsync"
+                           OnExtraToggled="OnExtraToggled" />
+        </div>
+
+        <aside class="area-summary">
+            <RentalSummary Car="car" Days="Days" Extras="SelectedExtras" />
+        </aside>
+
+        <section class="area-actions" aria-label="Rezervasyonu tamamla">
+            @if (storageWarning is not null)
+            {
+                <div class="alert alert-warning" role="alert">@storageWarning</div>
+            }
+
+            @if (conflict is not null)
+            {
+                <div class="alert alert-error" role="alert">
+                    <strong>Bu tarihlerde araç dolu.</strong>
+                    Seçtiğiniz tarihler, bu araç için <strong>@conflict.Id</strong> kodlu aktif rezervasyonla
+                    (@Formatters.Date(conflict.PickupDate) – @Formatters.Date(conflict.ReturnDate)) çakışıyor.
+                    Lütfen başka tarihler seçin.
+                </div>
+            }
+
+            @if (!showForm)
+            {
+                <button type="button" class="btn btn-primary btn-lg complete-button"
+                        disabled="@(!CanProceed)" @onclick="ShowForm">
+                    Rezervasyonu Tamamla
+                </button>
+                @if (!CanProceed)
+                {
+                    <p class="hint">@BlockReason</p>
+                }
+            }
+            else
+            {
+                <CustomerForm OnSubmit="CompleteBookingAsync"
+                              OnCancel="HideForm"
+                              IsBusy="isSaving"
+                              IsDisabled="@(!CanProceed)" />
+            }
+
+            @if (submitError is not null)
+            {
+                <div class="alert alert-error submit-error" role="alert">@submitError</div>
+            }
+        </section>
+    </div>
+}
+
+@code {
+    [Parameter] public string Id { get; set; } = "";
+
+    private Car? car;
+    private bool isLoading = true;
+    private string? loadError;
+    private CarBooking? conflict;
+    private string? storageWarning;
+    private bool showForm;
+    private bool isSaving;
+    private string? submitError;
+
+    // Bütün hesaplar RentalRules üzerinden yapılır; değerler her çizimde güncel durumdan yeniden hesaplanır.
+    private string? DateError => RentalRules.ValidateDates(State.PickupDate, State.ReturnDate, DateTime.Today);
+
+    private int Days => DateError is null
+        ? RentalRules.CalculateDays(State.PickupDate!.Value, State.ReturnDate!.Value)
+        : 0;
+
+    private IReadOnlyList<RentalExtra> SelectedExtras => RentalExtraCatalog.GetByIds(State.ExtraIds);
+
+    private bool CanProceed => car is not null && car.IsAvailable && DateError is null && conflict is null;
+
+    private string BlockReason =>
+        car is { IsAvailable: false } ? "Bu araç kiralamaya uygun olmadığı için rezervasyon yapılamaz."
+        : DateError is not null ? "Devam etmek için geçerli tarihler seçin."
+        : conflict is not null ? "Seçilen tarihler başka bir rezervasyonla çakışıyor."
+        : "";
+
+    // Aynı sayfadayken adres değişirse (başka bir araç) de çalışsın diye OnParametersSetAsync kullanılır.
+    protected override Task OnParametersSetAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        isLoading = true;
+        loadError = null;
+        car = null;
+        showForm = false;
+        submitError = null;
+
+        try
+        {
+            car = await CarService.GetCarByIdAsync(Id);
+            if (car is not null)
+            {
+                State.SelectCar(car.Id); // Aynı araca geri dönüldüyse önceki seçimler korunur.
+                await RefreshConflictAsync();
+            }
+        }
+        catch (InvalidOperationException ex)
+        {
+            loadError = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task RefreshConflictAsync()
+    {
+        if (car is null || DateError is not null)
+        {
+            conflict = null;
+            return;
+        }
+
+        conflict = await BookingService.FindConflictAsync(car.Id, State.PickupDate!.Value, State.ReturnDate!.Value);
+        storageWarning = BookingService.StorageWarning;
+    }
+
+    private async Task OnPickupDateChangedAsync(DateTime? value)
+    {
+        State.PickupDate = value;
+        submitError = null;
+        await RefreshConflictAsync();
+    }
+
+    private async Task OnReturnDateChangedAsync(DateTime? value)
+    {
+        State.ReturnDate = value;
+        submitError = null;
+        await RefreshConflictAsync();
+    }
+
+    private void OnExtraToggled(string extraId) => State.ToggleExtra(extraId);
+
+    private void ShowForm() => showForm = true;
+
+    private void HideForm() => showForm = false;
+
+    private async Task CompleteBookingAsync(CustomerInfo customer)
+    {
+        if (car is null || isSaving)
+            return;
+
+        isSaving = true;
+        submitError = null;
+        try
+        {
+            // Servis bütün kuralları son kez kontrol eder (uygunluk, tarih, çakışma).
+            var booking = await BookingService.CreateBookingAsync(car, State.PickupDate, State.ReturnDate, State.ExtraIds, customer);
+            State.LastBookingId = booking.Id;
+            State.ClearSelection();
+            Nav.NavigateTo("my-bookings");
+        }
+        catch (InvalidOperationException ex)
+        {
+            submitError = ex.Message;
+            await RefreshConflictAsync();
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+}

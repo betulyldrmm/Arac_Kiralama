@@ -1,0 +1,11 @@
+@page "/"
+@inject NavigationManager Nav
+
+<PageTitle>Araç Kiralama</PageTitle>
+
+<p>Araç listesine yönlendiriliyorsunuz… <a href="cars">Araçlar</a></p>
+
+@code {
+    // Ana sayfa doğrudan /cars sayfasına yönlendirir.
+    protected override void OnInitialized() => Nav.NavigateTo("cars", replace: true);
+}

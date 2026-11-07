@@ -1,0 +1,107 @@
+@* Bir rezervasyonun özeti. İptal isteği OnCancel (EventCallback) ile üst bileşene bildirilir.
+   Yanlışlıkla iptali önlemek için iki adımlı onay kullanılır. *@
+
+<article class="booking-card @StatusCss @(Highlight ? "highlight" : "")" aria-labelledby="@TitleId">
+    <header class="card-head">
+        <div>
+            <p class="code-label">Rezervasyon kodu</p>
+            <h3 id="@TitleId" class="code">@Booking.Id</h3>
+        </div>
+        <span class="status">@StatusText</span>
+    </header>
+
+    <dl class="info">
+        <div><dt>Araç</dt><dd>@CarName</dd></div>
+        <div><dt>Teslim alma</dt><dd>@Formatters.Date(Booking.PickupDate)</dd></div>
+        <div><dt>İade</dt><dd>@Formatters.Date(Booking.ReturnDate)</dd></div>
+        <div><dt>Süre</dt><dd>@Days gün</dd></div>
+        <div><dt>Ek hizmetler</dt><dd>@ExtrasText</dd></div>
+        <div><dt>Müşteri</dt><dd>@Booking.CustomerName</dd></div>
+        <div><dt>İletişim</dt><dd>@Booking.Email · @Booking.Phone</dd></div>
+        <div class="total-row"><dt>Toplam tutar</dt><dd>@Formatters.Money(Booking.TotalAmount)</dd></div>
+    </dl>
+
+    @if (ShowActions)
+    {
+        <div class="actions">
+            @if (Status == BookingStatus.Upcoming)
+            {
+                if (!isConfirming)
+                {
+                    <button type="button" class="btn btn-danger-outline" @onclick="StartConfirm">Rezervasyonu iptal et</button>
+                }
+                else
+                {
+                    <div class="confirm" role="group" aria-label="İptal onayı">
+                        <p><strong>@Booking.Id</strong> iptal edilsin mi?</p>
+                        <div class="confirm-buttons">
+                            <button type="button" class="btn btn-danger" @onclick="ConfirmCancelAsync">Evet, iptal et</button>
+                            <button type="button" class="btn btn-secondary" @onclick="StopConfirm">Vazgeç</button>
+                        </div>
+                    </div>
+                }
+            }
+            else if (Status == BookingStatus.Cancelled)
+            {
+                <p class="note">Bu rezervasyon iptal edildi; aynı tarihler yeniden kiralanabilir.</p>
+            }
+            else
+            {
+                <p class="note">Başlamış veya tamamlanmış rezervasyonlar iptal edilemez.</p>
+            }
+        </div>
+    }
+</article>
+
+@code {
+    [Parameter, EditorRequired] public CarBooking Booking { get; set; } = default!;
+    [Parameter] public Car? Car { get; set; }
+    [Parameter] public bool ShowActions { get; set; } = true;
+    [Parameter] public bool Highlight { get; set; }
+    [Parameter] public EventCallback<CarBooking> OnCancel { get; set; }
+
+    private bool isConfirming;
+
+    private BookingStatus Status => RentalRules.GetStatus(Booking, DateTime.Today);
+
+    private int Days => RentalRules.CalculateDays(Booking.PickupDate, Booking.ReturnDate);
+
+    private string TitleId => $"{(Highlight ? "summary" : "booking")}-{Booking.Id}";
+
+    private string CarName => Car is null ? $"Araç kodu {Booking.CarId}" : $"{Car.Brand} {Car.Model}";
+
+    private string ExtrasText
+    {
+        get
+        {
+            var extras = RentalExtraCatalog.GetByIds(Booking.ExtraIds);
+            return extras.Count == 0 ? "Yok" : string.Join(", ", extras.Select(extra => extra.Name));
+        }
+    }
+
+    private string StatusText => Status switch
+    {
+        BookingStatus.Upcoming => "Yaklaşan",
+        BookingStatus.Ongoing => "Devam ediyor",
+        BookingStatus.Completed => "Tamamlandı",
+        _ => "İptal edildi"
+    };
+
+    private string StatusCss => Status switch
+    {
+        BookingStatus.Upcoming => "status-upcoming",
+        BookingStatus.Ongoing => "status-ongoing",
+        BookingStatus.Completed => "status-completed",
+        _ => "status-cancelled"
+    };
+
+    private void StartConfirm() => isConfirming = true;
+
+    private void StopConfirm() => isConfirming = false;
+
+    private async Task ConfirmCancelAsync()
+    {
+        isConfirming = false;
+        await OnCancel.InvokeAsync(Booking);
+    }
+}

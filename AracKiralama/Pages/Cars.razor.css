@@ -1,0 +1,12 @@
+.intro {
+    margin-bottom: 1.25rem;
+}
+
+.intro h1 {
+    margin-bottom: 0.25rem;
+}
+
+.intro p {
+    color: var(--color-muted);
+    margin: 0;
+}

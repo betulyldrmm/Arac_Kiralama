@@ -1,0 +1,61 @@
+@* Fiyat özeti. Parametreler (gün sayısı, seçili hizmetler) değiştiği anda Blazor bileşeni yeniden çizer,
+   böylece toplam tutar anlık güncellenir. Hesap RentalRules sınıfındaki formülle yapılır:
+   Toplam = gün sayısı × (araç günlük ücreti + seçilen hizmetlerin günlük ücretleri) *@
+
+<section class="summary" aria-labelledby="summary-title">
+    <h2 id="summary-title">Fiyat özeti</h2>
+
+    <dl class="lines">
+        <div class="line">
+            <dt>@Car.Brand @Car.Model (günlük)</dt>
+            <dd>@Formatters.Money(Car.DailyPrice)</dd>
+        </div>
+
+        @if (Extras.Count == 0)
+        {
+            <div class="line muted">
+                <dt>Ek hizmet</dt>
+                <dd>Seçilmedi</dd>
+            </div>
+        }
+        else
+        {
+            foreach (var extra in Extras)
+            {
+                <div class="line">
+                    <dt>@extra.Name (günlük)</dt>
+                    <dd>+@Formatters.Money(extra.DailyPrice)</dd>
+                </div>
+            }
+        }
+
+        <div class="line subtotal">
+            <dt>Günlük toplam</dt>
+            <dd>@Formatters.Money(DailyTotal)</dd>
+        </div>
+
+        <div class="line">
+            <dt>Kiralama süresi</dt>
+            <dd>@(Days > 0 ? $"{Days} gün" : "—")</dd>
+        </div>
+    </dl>
+
+    @if (Days > 0)
+    {
+        <p class="formula">@Days gün × @Formatters.Money(DailyTotal)</p>
+    }
+
+    <div class="total" aria-live="polite" aria-atomic="true">
+        <span class="total-label">Toplam tutar</span>
+        <strong class="total-value">@(Days > 0 ? Formatters.Money(Total) : "Geçerli tarih seçin")</strong>
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public Car Car { get; set; } = default!;
+    [Parameter] public int Days { get; set; }
+    [Parameter] public IReadOnlyList<RentalExtra> Extras { get; set; } = Array.Empty<RentalExtra>();
+
+    private decimal DailyTotal => RentalRules.CalculateDailyTotal(Car.DailyPrice, Extras);
+    private decimal Total => RentalRules.CalculateTotal(Car.DailyPrice, Extras, Days);
+}

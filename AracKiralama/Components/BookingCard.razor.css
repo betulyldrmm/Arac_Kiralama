@@ -1,0 +1,126 @@
+.booking-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 6px solid var(--status-color, var(--color-border));
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    box-shadow: var(--shadow);
+}
+
+.booking-card.highlight {
+    border-width: 2px 2px 2px 6px;
+    border-color: var(--color-success);
+}
+
+.status-upcoming {
+    --status-color: var(--color-primary);
+    --status-bg: var(--color-primary-soft);
+    --status-text: #153a99;
+}
+
+.status-ongoing {
+    --status-color: #d18a00;
+    --status-bg: var(--color-warning-bg);
+    --status-text: var(--color-warning);
+}
+
+.status-completed {
+    --status-color: #6b7280;
+    --status-bg: #eef0f3;
+    --status-text: #374151;
+}
+
+.status-cancelled {
+    --status-color: var(--color-danger);
+    --status-bg: var(--color-danger-bg);
+    --status-text: #7a1610;
+}
+
+.card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.code-label {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.code {
+    margin: 0;
+    font-size: 1.25rem;
+    font-family: Consolas, "Courier New", monospace;
+}
+
+.status {
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: var(--status-bg);
+    color: var(--status-text);
+    white-space: nowrap;
+}
+
+.info {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.6rem 1.25rem;
+    margin: 0;
+}
+
+.info dt {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+}
+
+.info dd {
+    margin: 0;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.info .total-row dd {
+    font-size: 1.15rem;
+    color: var(--color-accent);
+}
+
+.status-cancelled .info .total-row dd {
+    text-decoration: line-through;
+    color: var(--color-muted);
+}
+
+.actions {
+    margin-top: 0.9rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--color-surface-alt);
+}
+
+.note {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-muted);
+}
+
+.confirm {
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-danger-bg);
+}
+
+.confirm p {
+    margin-bottom: 0.5rem;
+    color: #7a1610;
+}
+
+.confirm-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}

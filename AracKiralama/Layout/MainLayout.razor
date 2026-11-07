@@ -1,0 +1,24 @@
+@inherits LayoutComponentBase
+
+<div class="page">
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="logo" href="cars">
+                <span class="logo-mark" aria-hidden="true">AK</span>
+                <span class="logo-text">Araç Kiralama</span>
+            </a>
+            <nav class="main-nav" aria-label="Ana menü">
+                <NavLink class="nav-link" href="cars">Araçlar</NavLink>
+                <NavLink class="nav-link" href="my-bookings">Rezervasyonlarım</NavLink>
+            </nav>
+        </div>
+    </header>
+
+    <main class="site-main">
+        @Body
+    </main>
+
+    <footer class="site-footer">
+        <p>Eğitim prototipi · Gerçek ödeme alınmaz · Rezervasyonlar yalnızca bu tarayıcıda saklanır.</p>
+    </footer>
+</div>
