@@ -1,49 +1,47 @@
 PROJE DOKÜMANTASYONU
 ====================
 
-Proje adı   : Araç Kiralama ve Rezervasyon Uygulaması
+Proje adı   : Rota39 - Araç Kiralama ve Rezervasyon Uygulaması
 Teknoloji   : Blazor WebAssembly (Standalone), .NET 8, C#
-Ders / Ödev : Vize Ödevi
+Ders / Ödev : İleri Web Programlama Vize Ödevi
 
 GRUP ÜYELERİ
 ------------
-1. Öğrenci No : ____________________
-   Ad Soyad   : ____________________
+1. Öğrenci No : 1230505051
+   Ad Soyad   : Betül Yıldırım
 
 2. Öğrenci No : ____________________
-   Ad Soyad   : ____________________
+   Ad Soyad   : Mukadder Bölükbaşı
 
 GÖREV DAĞILIMI
 --------------
-(Aşağıdaki maddeler önerilen iş bölümüdür. Teslim etmeden önce her üyenin GERÇEKTE yaptığı
-işlere göre düzenleyin; yapılmayan işleri silin, yapılan ek işleri ekleyin.)
+Ortak:
+- Veri modellerinin belirlenmesi (Car, CarBooking, CustomerInfo, CarFilter, RentalExtra, BookingStatus)
+- Projenin uçtan uca test edilmesi ve anlatım videosu
 
-Ortak (iki üye birlikte):
-- Veri modellerinin belirlenmesi (Models/Car.cs, CarBooking.cs, CustomerInfo.cs, CarFilter.cs, RentalExtra.cs, BookingStatus.cs)
-- Kiralama kurallarının belirlenmesi (Services/RentalRules.cs): gün sayısı, fiyat formülü, tarih sınırları
-- Servis metot imzalarının belirlenmesi (CarService, BookingService, RentalState)
-- Uçtan uca test ve anlatım videosu
+Betül Yıldırım:
+- Proje yapısının kurulması (Blazor WebAssembly, klasör düzeni, Program.cs servis kayıtları)
+- cars.json verisi (15 araç, 5 kategori) ve araç görselleri
+- CarService: HttpClient ile cars.json dosyasının asenkron yüklenmesi ve hata mesajları
+- /cars sayfası; CarList, CarFilterPanel, CarCard ve CarImage bileşenleri
+- Marka, kategori, yakıt, vites ve fiyat aralığı filtreleri
+- [Parameter] ve EventCallback ile bileşenler arası veri akışı
+- /cars/{id}/rent sayfası; RentalOptions ve RentalSummary bileşenleri
+- RentalRules: gün sayısı, tarih kontrolü, ek hizmetler ve toplam fiyat hesabı
+- Uygun olmayan araç kontrolü, rezervasyon çakışma kontrolü ve iptal işlemi
 
-1. Üye: ____________________
-- cars.json verisi ve araç görselleri (wwwroot/data, wwwroot/images)
-- CarService: HttpClient ile cars.json'ın asenkron yüklenmesi ve hata mesajları
-- /cars sayfası (Pages/Cars.razor)
-- CarList, CarFilterPanel, CarCard, CarImage bileşenleri ve scoped CSS dosyaları
-- RentalSummary bileşeni ve anlık fiyat hesabı
-- Genel düzen (Layout/MainLayout) ve ortak tema (wwwroot/css/app.css)
-
-2. Üye: ____________________
-- BookingService: localStorage'a kayıt, çakışma kontrolü, iptal, rezervasyon kodu üretimi
-- RentalState: sayfalar arası paylaşılan seçimler (scoped servis)
-- /cars/{id}/rent sayfası (Pages/Rent.razor)
-- /my-bookings sayfası (Pages/MyBookings.razor)
-- RentalOptions, CustomerForm, BookingCard bileşenleri ve scoped CSS dosyaları
-- Form doğrulama kuralları (CustomerInfo öznitelikleri)
+Mukadder Bölükbaşı:
+- CustomerInfo modeli ve doğrulama öznitelikleri ([Required], [EmailAddress], [Phone], [StringLength], [RegularExpression])
+- CustomerForm bileşeni (EditForm, DataAnnotationsValidator, ValidationMessage)
+- BookingService: rezervasyonların localStorage'a kaydedilmesi ve okunması, rezervasyon kodu üretimi
+- RentalState: sayfalar arası seçimlerin scoped servis ile paylaşılması
+- /my-bookings sayfası ve BookingCard bileşeni
+- Tasarım ve scoped CSS (.razor.css dosyaları, app.css teması, MainLayout, mobil uyumluluk)
+- README dosyası
 
 ÇALIŞMAYAN / EKSİK İŞLEVLER
 ---------------------------
-(Videoda ve burada açıkça belirtin. Yoksa "Yok" yazın.)
-____________________
+Yok.
 
 VİDEO BAĞLANTISI
 ----------------
@@ -51,5 +49,5 @@ ____________________
 
 YAPAY ZEKÂ KULLANIMI
 --------------------
-(Ödev yönergesi yapay zekâ kullanımına izin vermektedir. Nasıl kullandığınızı kısaca belirtebilirsiniz.)
-____________________
+Ödev yönergesi yapay zekâ kullanımına izin vermektedir. Kodun hazırlanmasında yapay zekâ araçlarından
+yardım alınmış; uygulama tarafımızca çalıştırılıp test edilmiş ve düzenlenmiştir.
