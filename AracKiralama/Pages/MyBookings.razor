@@ -3,12 +3,10 @@
 @inject CarService CarService
 @inject RentalState State
 
-<PageTitle>Rezervasyonlarım · Araç Kiralama</PageTitle>
+<PageTitle>Rezervasyonlarım · Rota39</PageTitle>
 
 <h1>Rezervasyonlarım</h1>
-<p class="lead">
-    Kayıtlar bu tarayıcının yerel depolamasında (localStorage) tutulur; sayfayı yenileseniz de korunur.
-</p>
+<p class="lead">Rezervasyonlarınız bu tarayıcıda saklanır.</p>
 
 @* Ekran okuyucular iptal sonucunu duyabilsin diye bu alan her zaman sayfada bulunur. *@
 <div class="status-region" role="status" aria-live="polite">
@@ -50,10 +48,7 @@ else
 
     <section class="all-bookings" aria-labelledby="all-bookings-title">
         <h2 id="all-bookings-title">Tüm rezervasyonlar (@bookings.Count)</h2>
-        <p class="help">
-            Yalnızca teslim alma tarihi henüz gelmemiş ve iptal edilmemiş rezervasyonlar iptal edilebilir.
-            İptal edilen kayıtlar silinmez, “İptal edildi” olarak görünür ve tarihleri yeniden kiralanabilir.
-        </p>
+        <p class="help">Teslim tarihi henüz gelmemiş rezervasyonları iptal edebilirsiniz.</p>
 
         @if (bookings.Count == 0)
         {

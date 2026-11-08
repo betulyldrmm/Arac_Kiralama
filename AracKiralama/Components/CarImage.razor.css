@@ -1,7 +1,15 @@
+.car-figure {
+    position: relative;
+    margin: 0;
+    background: var(--color-surface-alt);
+}
+
+/* Bütün kartlarda aynı yükseklik. object-fit: contain, aracın kesilmemesini sağlar;
+   boşta kalan kenarlar açık gri zeminle doldurulur. */
 .car-image {
     width: 100%;
     aspect-ratio: 16 / 10;
-    object-fit: cover;
+    object-fit: contain;
     background: var(--color-surface-alt);
 }
 
@@ -10,18 +18,52 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.4rem;
-    background: linear-gradient(135deg, #e8edf6, #d9e1ef);
-    color: #5d6b82;
+    gap: 0.35rem;
+    color: #7a8698;
 }
 
 .fallback-icon {
-    width: 38%;
-    max-width: 140px;
+    width: 34%;
+    max-width: 120px;
     height: auto;
 }
 
 .fallback-text {
     font-size: 0.85rem;
     font-weight: 600;
+}
+
+/* Sağ alt köşede küçük kaynak satırı */
+.credit {
+    position: absolute;
+    right: 0.4rem;
+    bottom: 0.4rem;
+    max-width: calc(100% - 0.8rem);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    background: rgba(19, 35, 63, 0.82);
+    color: #fff;
+    font-size: 0.72rem;
+    line-height: 1.4;
+}
+
+.credit-text {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.credit-link {
+    flex-shrink: 0;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.credit-link:hover {
+    color: #ffd2b8;
 }

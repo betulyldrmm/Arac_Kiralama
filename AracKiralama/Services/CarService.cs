@@ -1,4 +1,4 @@
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Text.Json;
 using AracKiralama.Models;
 
@@ -11,7 +11,8 @@ namespace AracKiralama.Services;
 /// </summary>
 public class CarService
 {
-    private const string DataPath = "data/cars.json";
+    // ?v=2: dosya değişince tarayıcının eski kopyayı (önbellek) kullanmaması için sürüm numarası.
+    private const string DataPath = "data/cars.json?v=3";
 
     private readonly HttpClient _http;
     private List<Car>? _cars;
@@ -58,3 +59,4 @@ public class CarService
         return cars.FirstOrDefault(car => string.Equals(car.Id, id, StringComparison.OrdinalIgnoreCase));
     }
 }
+

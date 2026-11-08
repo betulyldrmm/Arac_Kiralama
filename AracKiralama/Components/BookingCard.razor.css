@@ -1,21 +1,22 @@
 .booking-card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-left: 6px solid var(--status-color, var(--color-border));
+    border-left: 4px solid var(--status-color, var(--color-border));
     border-radius: var(--radius);
-    padding: 1rem 1.1rem;
+    padding: var(--space);
     box-shadow: var(--shadow);
 }
 
 .booking-card.highlight {
-    border-width: 2px 2px 2px 6px;
     border-color: var(--color-success);
+    border-left-color: var(--color-success);
 }
 
+/* Durum renkleri: her durum kendi kenar ve etiket rengini değişkenlerle verir. */
 .status-upcoming {
-    --status-color: var(--color-primary);
-    --status-bg: var(--color-primary-soft);
-    --status-text: #153a99;
+    --status-color: var(--color-navy);
+    --status-bg: #e6ebf3;
+    --status-text: var(--color-navy);
 }
 
 .status-ongoing {
@@ -25,9 +26,9 @@
 }
 
 .status-completed {
-    --status-color: #6b7280;
-    --status-bg: #eef0f3;
-    --status-text: #374151;
+    --status-color: #8a94a3;
+    --status-bg: var(--color-surface-alt);
+    --status-text: #3d4655;
 }
 
 .status-cancelled {
@@ -41,27 +42,25 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.9rem;
 }
 
 .code-label {
     margin: 0;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--color-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
 }
 
 .code {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-family: Consolas, "Courier New", monospace;
 }
 
 .status {
-    padding: 0.25rem 0.7rem;
+    padding: 0.2rem 0.65rem;
     border-radius: 999px;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 700;
     background: var(--status-bg);
     color: var(--status-text);
@@ -70,8 +69,8 @@
 
 .info {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.6rem 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 0.7rem 1.25rem;
     margin: 0;
 }
 
@@ -88,7 +87,7 @@
 
 .info .total-row dd {
     font-size: 1.15rem;
-    color: var(--color-accent);
+    font-weight: 800;
 }
 
 .status-cancelled .info .total-row dd {
@@ -97,8 +96,8 @@
 }
 
 .actions {
-    margin-top: 0.9rem;
-    padding-top: 0.8rem;
+    margin-top: 1rem;
+    padding-top: 0.85rem;
     border-top: 1px solid var(--color-surface-alt);
 }
 

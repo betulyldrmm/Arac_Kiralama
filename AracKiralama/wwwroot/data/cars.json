@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": "C001",
     "brand": "Toyota",
@@ -8,8 +8,11 @@
     "transmission": "Otomatik",
     "seats": 5,
     "dailyPrice": 1450,
-    "imageUrl": "images/c001-toyota-corolla.svg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/toyoto.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C002",
@@ -20,8 +23,11 @@
     "transmission": "Manuel",
     "seats": 5,
     "dailyPrice": 1800,
-    "imageUrl": "images/c002-dacia-duster.svg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/dacia.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C003",
@@ -32,8 +38,11 @@
     "transmission": "Manuel",
     "seats": 5,
     "dailyPrice": 1100,
-    "imageUrl": "images/c003-renault-clio.svg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/renault.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C004",
@@ -44,8 +53,11 @@
     "transmission": "Manuel",
     "seats": 5,
     "dailyPrice": 1200,
-    "imageUrl": "images/c004-fiat-egea.svg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/fiat.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C005",
@@ -56,8 +68,11 @@
     "transmission": "Otomatik",
     "seats": 5,
     "dailyPrice": 1250,
-    "imageUrl": "images/c005-hyundai-i20.svg",
-    "isAvailable": false
+    "isAvailable": false,
+    "imageUrl": "images/cars/hyundai.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C006",
@@ -68,8 +83,11 @@
     "transmission": "Otomatik",
     "seats": 5,
     "dailyPrice": 2400,
-    "imageUrl": "images/c006-volkswagen-passat.svg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/passat.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C007",
@@ -80,8 +98,11 @@
     "transmission": "Otomatik",
     "seats": 5,
     "dailyPrice": 2600,
-    "imageUrl": "images/c007-toyota-c-hr.svg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/toyotachr.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C008",
@@ -92,8 +113,11 @@
     "transmission": "Otomatik",
     "seats": 5,
     "dailyPrice": 2500,
-    "imageUrl": "images/c008-peugeot-3008.svg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/peugeot.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C009",
@@ -104,8 +128,11 @@
     "transmission": "Otomatik",
     "seats": 5,
     "dailyPrice": 4800,
-    "imageUrl": "images/c009-bmw-520i.svg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/bmw.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C010",
@@ -116,8 +143,11 @@
     "transmission": "Otomatik",
     "seats": 5,
     "dailyPrice": 5200,
-    "imageUrl": "images/c010-mercedesbenz-e-220d.svg",
-    "isAvailable": false
+    "isAvailable": false,
+    "imageUrl": "images/cars/mercedes.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C011",
@@ -128,8 +158,11 @@
     "transmission": "Otomatik",
     "seats": 5,
     "dailyPrice": 4500,
-    "imageUrl": null,
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/tesla.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C012",
@@ -140,8 +173,11 @@
     "transmission": "Manuel",
     "seats": 7,
     "dailyPrice": 2100,
-    "imageUrl": "images/c012-volkswagen-caddy.svg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/wolkswagen.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C013",
@@ -152,8 +188,11 @@
     "transmission": "Otomatik",
     "seats": 5,
     "dailyPrice": 1700,
-    "imageUrl": "images/eksik-gorsel.jpg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/renaultt.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C014",
@@ -164,8 +203,11 @@
     "transmission": "Otomatik",
     "seats": 8,
     "dailyPrice": 3200,
-    "imageUrl": "images/c014-ford-tourneo-custom.svg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/ford.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   },
   {
     "id": "C015",
@@ -176,7 +218,12 @@
     "transmission": "Otomatik",
     "seats": 5,
     "dailyPrice": 1950,
-    "imageUrl": "images/c015-honda-civic.svg",
-    "isAvailable": true
+    "isAvailable": true,
+    "imageUrl": "images/cars/honda.jpg",
+    "imageSourceUrl": null,
+    "imageCredit": null,
+    "imageLicense": null
   }
 ]
+
+

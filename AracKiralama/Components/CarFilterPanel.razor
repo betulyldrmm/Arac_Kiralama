@@ -3,13 +3,23 @@
 @* Marka, kategori, yakıt, vites ve günlük fiyat aralığı filtreleri.
    Her değişiklikte "Filter with { ... }" ile yeni bir filtre üretilip FilterChanged ile üst bileşene gönderilir. *@
 
-<section class="filters" aria-labelledby="filters-title">
+<section class="filters @(isOpenOnMobile ? "is-open" : "")" aria-labelledby="filters-title">
     <div class="filters-head">
         <h2 id="filters-title">Filtrele</h2>
         <button type="button" class="btn btn-link" @onclick="ClearAsync" disabled="@Filter.IsEmpty">Temizle</button>
     </div>
 
-    <div class="filters-grid">
+    @* Yalnızca mobilde görünür: filtre alanlarını açıp kapatır (CSS ile gizlenir/gösterilir). *@
+    <button type="button" class="btn btn-secondary mobile-toggle" @onclick="ToggleMobile"
+            aria-expanded="@(isOpenOnMobile ? "true" : "false")" aria-controls="filters-body">
+        @(isOpenOnMobile ? "Filtreleri gizle" : "Filtreleri göster")
+        @if (!Filter.IsEmpty)
+        {
+            <span class="active-dot" aria-label="(filtre seçili)"></span>
+        }
+    </button>
+
+    <div id="filters-body" class="filters-grid">
         <div class="field">
             <label for="filter-brand">Marka</label>
             <select id="filter-brand" value="@Filter.Brand"
@@ -89,6 +99,10 @@
     [Parameter] public IReadOnlyList<string> Categories { get; set; } = Array.Empty<string>();
     [Parameter] public IReadOnlyList<string> FuelTypes { get; set; } = Array.Empty<string>();
     [Parameter] public IReadOnlyList<string> Transmissions { get; set; } = Array.Empty<string>();
+
+    private bool isOpenOnMobile;
+
+    private void ToggleMobile() => isOpenOnMobile = !isOpenOnMobile;
 
     private Task ChangeAsync(CarFilter newFilter) => FilterChanged.InvokeAsync(newFilter);
 

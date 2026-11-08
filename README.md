@@ -1,4 +1,6 @@
-# Araç Kiralama ve Rezervasyon Uygulaması
+# Rota39 · Araç Kiralama ve Rezervasyon Uygulaması
+
+> "Rota39", bu ödev için uydurulmuş örnek bir proje adıdır; gerçek bir şirketi temsil etmez.
 
 Blazor WebAssembly ile hazırlanmış bir eğitim prototipi. Uygulamada araçlar listelenir ve filtrelenir. Tarih ve ek hizmet seçilince fiyat anında hesaplanır. Rezervasyonlar tarayıcıda (localStorage) saklanır ve iptal edilebilir. Gerçek ödeme, kullanıcı girişi ve veritabanı **yoktur**.
 
@@ -40,7 +42,7 @@ Ardından tarayıcıda `http://localhost:5080` adresini açın.
 AracKiralamaOdev/
 ├─ AracKiralama.sln
 ├─ proje.txt                     ← öğrenci bilgileri ve görev dağılımı şablonu
-├─ BENIOKU.md                    ← bu dosya
+├─ README.md                    ← bu dosya
 └─ AracKiralama/
    ├─ AracKiralama.csproj
    ├─ Program.cs                 ← servis kayıtları (HttpClient, CarService, BookingService, RentalState)
@@ -79,7 +81,7 @@ AracKiralamaOdev/
       ├─ index.html
       ├─ css/app.css             ← ortak tema (renkler, butonlar, uyarılar, form kontrolleri)
       ├─ data/cars.json
-      └─ images/*.svg            ← araç çizimleri (proje içinde, dış bağlantı yok)
+      └─ images/cars/            ← araç görselleri (şimdilik çizimler; bkz. "Araç fotoğraflarını ekleme")
 ```
 
 ---
@@ -125,10 +127,33 @@ PDF'de açıkça yazmayan noktalarda aşağıdaki varsayımlar kullanıldı.
 | E-posta | `[EmailAddress]` yalnızca tek bir `@` olup olmadığına bakar. Bu yüzden ek bir desenle alan adında nokta da aranır (`ad@ornek` reddedilir). |
 | Ad soyad | 5–60 karakter, en az iki kelime. |
 | Uygun olmayan araç | Kartta "Kirala" butonu pasiftir ve uyarı yazısı vardır. Adres elle yazılarak açılırsa kiralama sayfasında da form kapalıdır ve uyarı görünür. |
-| Görseller | Araç çizimleri proje içindeki SVG dosyalarıdır. **Bilerek** iki araçta yedek görünüm vardır: C011 Tesla'nın `imageUrl` değeri `null`, C013 Megane ise var olmayan bir dosyayı gösterir (kırık bağlantı örneği). İsterseniz bu iki araca da görsel ekleyebilirsiniz. |
+| Görseller | Görseller `wwwroot/images/cars` klasöründedir. **Bilerek** iki araçta yedek görünüm vardır: C011 Tesla'nın `imageUrl` değeri `null`, C013 Megane ise var olmayan bir dosyayı gösterir (kırık bağlantı örneği). |
+| Depolama | Rezervasyonlar tarayıcının `localStorage` alanında `arac-kiralama.bookings` anahtarıyla JSON olarak tutulur. Ekranda kullanıcıya yalnızca "bu tarayıcıda saklanır" denir. |
 | Uygun olmayan araçlar | C005 Hyundai i20 ve C010 Mercedes-Benz E 220d (`isAvailable: false`). |
 
 ---
+
+## Araç fotoğraflarını ekleme
+
+Her araç kaydında görselle ilgili dört alan vardır (`Models/Car.cs`, `wwwroot/data/cars.json`):
+
+| Alan | Anlamı | Örnek |
+|---|---|---|
+| `imageUrl` | Gösterilecek dosya | `images/cars/c001-toyota-corolla.jpg` |
+| `imageSourceUrl` | Fotoğrafın alındığı sayfa | Wikimedia Commons'taki dosya sayfası |
+| `imageCredit` | Lisansın istediği fotoğrafçı/kaynak adı | Commons sayfasındaki "Author" (Yazar) |
+| `imageLicense` | Lisans adı | `CC BY-SA 4.0` |
+
+`imageSourceUrl` doluysa görselin sağ alt köşesinde "© yazar · lisans" bilgisi ve yeni sekmede açılan **"Fotoğraf kaynağı ↗"** bağlantısı görünür (`Components/CarImage.razor`). Görselin tamamı bağlantı değildir. Fotoğraflar `object-fit: contain` ile gösterildiği için araç kesilmez; bütün kartlarda yükseklik aynıdır.
+
+Fotoğraf ekleme adımları:
+1. https://commons.wikimedia.org adresinde marka ve model adıyla arayın (ör. "Toyota Corolla E210 sedan"). **Aynı model ve kasa** olduğundan emin olun.
+2. Dosya sayfasında lisansın CC0, CC BY veya CC BY-SA gibi serbest bir lisans olduğunu kontrol edin.
+3. "Download" ile yaklaşık 800 px genişliğinde bir sürüm indirin. Dosyayı `wwwroot/images/cars/` klasörüne kısa bir adla kaydedin (ör. `c001-toyota-corolla.jpg`).
+4. `cars.json` içinde o aracın `imageUrl` değerini yeni dosya yolu yapın. `imageSourceUrl` alanına dosya sayfasının adresini, `imageCredit` alanına yazar adını, `imageLicense` alanına lisans adını yazın.
+5. Uygulamayı yenileyin ve kaynak bağlantısının doğru sayfayı açtığını kontrol edin.
+
+Fotoğraflar eklenene kadar projede kendi çizdiğimiz SVG çizimler kullanılır; bunlar için kaynak gösterilmesi gerekmez.
 
 ## 5. Değerlendirme kontrol tablosu
 
@@ -140,7 +165,7 @@ PDF'de açıkça yazmayan noktalarda aşağıdaki varsayımlar kullanıldı.
 | 4 | Form doğrulama (15) | `Models/CustomerInfo.cs` (`[Required]`, `[StringLength]`, `[EmailAddress]`, `[Phone]`, `[RegularExpression]`), `Components/CustomerForm.razor` (`EditForm`, `DataAnnotationsValidator`, `ValidationMessage`) | Boş, hatalı e-posta ve hatalı telefonla gönderme |
 | 5 | Durum yönetimi (10) | `Services/RentalState.cs` (scoped), `Services/BookingService.cs` (localStorage), `Program.cs` (`AddScoped`) | Listeye dönüp gelince seçimlerin korunması; F5 sonrası kayıtların ve iptallerin korunması; F12 → Local Storage |
 | 6 | Tasarım ve scoped CSS (20) | Her bileşenin ve sayfanın `.razor.css` dosyası, `wwwroot/css/app.css`, `Components/CarImage.razor` | Mobil görünüm (F12 → cihaz modu), klavye ile gezinme, hata/başarı mesajları, yedek görsel |
-| 7 | Dokümantasyon ve teslim (15) | `proje.txt`, `BENIOKU.md`, ZIP, video | — |
+| 7 | Dokümantasyon ve teslim (15) | `proje.txt`, `README.md`, ZIP, video | — |
 
 ---
 
@@ -235,18 +260,13 @@ Task CancelAsync(string bookingId);
 AracKiralamaOdev.zip
 ├─ AracKiralama.sln
 ├─ proje.txt                (adlar ve numaralar doldurulmuş olarak)
-├─ BENIOKU.md
+├─ README.md
 └─ AracKiralama/            (bütün kaynak kod; bin/ ve obj/ klasörleri HARİÇ)
 ```
 ZIP oluşturmadan önce Visual Studio'yu kapatın ve `AracKiralama/bin`, `AracKiralama/obj`, `.vs` klasörlerini silin. Bu klasörler derleme çıktısıdır ve dosya boyutunu çok büyütür. Videoyu ZIP'e koymak yerine bağlantısını `proje.txt` içine yazın (yönerge farklı bir şey istiyorsa ona uyun).
 
 ---
 
-## 10. Doğrulama durumu (dürüst not)
-
-- Proje, .NET SDK'ya erişimi olmayan bir ortamda yazıldı. **Burada derlenmedi ve tarayıcıda çalıştırılmadı.** İlk iş olarak Visual Studio'da derleyin ve Bölüm 6'daki senaryoları uygulayın. Derleme hatası çıkarsa hata metnini paylaşın.
-- Tarih, fiyat, çakışma, iptal, kod üretimi ve doğrulama desenleri, mantığın **Python'a birebir aktarılmış bir kopyasıyla** 31 senaryoda test edildi ve hepsi geçti. Bu test C# kodunun kendisini değil, kullanılan kuralları doğrular.
-- CSS tasarımı, sayfaların statik HTML kopyaları üzerinde masaüstü (1280 px) ve mobil (390 px) genişlikte görsel olarak kontrol edildi.
-- `cars.json` ve `launchSettings.json` geçerli JSON'dur. Bütün `.razor` ve `.cs` dosyalarında süslü parantezler dengelidir. Her bileşen ve sayfanın kendi scoped CSS dosyası vardır.
+## 10. Notlar
 
 **.NET 10 / Visual Studio 2026 notu:** Yalnızca .NET 10 kuruluysa `AracKiralama.csproj` içinde `net8.0` değerini `net10.0` yapın, iki paketin sürümünü de `10.0.x` yapın. Ayrıca `index.html` dosyasını .NET 10 Blazor WebAssembly şablonuyla karşılaştırın. Bu geçiş denenmedi; en kolay yol .NET 8 SDK'yı kurmaktır.

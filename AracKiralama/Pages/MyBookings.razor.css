@@ -1,6 +1,6 @@
 .lead {
     color: var(--color-muted);
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
 .confirmation {
@@ -9,6 +9,7 @@
 
 .confirmation h2 {
     margin-bottom: 0.25rem;
+    color: inherit;
 }
 
 .all-bookings h2 {
@@ -31,7 +32,7 @@
 
 .empty {
     background: var(--color-surface);
-    border: 2px dashed var(--color-border);
+    border: 1px dashed var(--color-border-strong);
     border-radius: var(--radius);
     padding: 2rem 1.25rem;
     text-align: center;

@@ -1,21 +1,38 @@
-@* Araç görseli. Görsel adresi boşsa veya dosya yüklenemezse (kırık bağlantı) düzgün bir yedek görünüm gösterir. *@
+@* Araç görseli.
+   • Görsel yoksa veya yüklenemezse (kırık bağlantı) sade bir yedek görünüm gösterir.
+   • ImageSourceUrl doluysa köşede küçük bir "Fotoğraf kaynağı ↗" bağlantısı ve fotoğrafçı/lisans bilgisi gösterir.
+     Bağlantı yalnızca bu küçük yazıdır; görselin tamamı bağlantı değildir. *@
 
-@if (ShowFallback)
-{
-    <div class="car-image fallback" role="img" aria-label="@($"{Car.Brand} {Car.Model}: görsel bulunamadı")">
-        <svg class="fallback-icon" viewBox="0 0 64 32" aria-hidden="true" focusable="false">
-            <path d="M4 22l4-9c1-3 3-4 6-4h28c4 0 6 1 8 4l6 6c3 0 4 1 4 3v3c0 1-1 2-2 2H6c-1 0-2-1-2-2z" fill="currentColor" opacity="0.85" />
-            <circle cx="16" cy="25" r="5" fill="currentColor" />
-            <circle cx="48" cy="25" r="5" fill="currentColor" />
-        </svg>
-        <span class="fallback-text">Görsel yok</span>
-    </div>
-}
-else
-{
-    <img class="car-image" src="@Car.ImageUrl" alt="@($"{Car.Brand} {Car.Model}")" loading="lazy"
-         @onerror="HandleImageError" />
-}
+<figure class="car-figure">
+    @if (ShowFallback)
+    {
+        <div class="car-image fallback" role="img" aria-label="@($"{Car.Brand} {Car.Model}: görsel yok")">
+            <svg class="fallback-icon" viewBox="0 0 64 32" aria-hidden="true" focusable="false">
+                <path d="M4 22l4-9c1-3 3-4 6-4h28c4 0 6 1 8 4l6 6c3 0 4 1 4 3v3c0 1-1 2-2 2H6c-1 0-2-1-2-2z" fill="currentColor" opacity="0.85" />
+                <circle cx="16" cy="25" r="5" fill="currentColor" />
+                <circle cx="48" cy="25" r="5" fill="currentColor" />
+            </svg>
+            <span class="fallback-text">Görsel yok</span>
+        </div>
+    }
+    else
+    {
+        <img class="car-image" src="@Car.ImageUrl" alt="@($"{Car.Brand} {Car.Model}")" loading="lazy"
+             @onerror="HandleImageError" />
+
+        @if (!string.IsNullOrWhiteSpace(Car.ImageSourceUrl))
+        {
+            <figcaption class="credit">
+                @if (!string.IsNullOrWhiteSpace(CreditText))
+                {
+                    <span class="credit-text" title="@CreditText">@CreditText</span>
+                }
+                <a class="credit-link" href="@Car.ImageSourceUrl" target="_blank" rel="noopener noreferrer"
+                   aria-label="@($"{Car.Brand} {Car.Model} fotoğraf kaynağı (yeni sekmede açılır)")">Fotoğraf kaynağı ↗</a>
+            </figcaption>
+        }
+    }
+</figure>
 
 @code {
     [Parameter, EditorRequired] public Car Car { get; set; } = default!;
@@ -24,6 +41,11 @@ else
     private string? lastImageUrl;
 
     private bool ShowFallback => imageFailed || string.IsNullOrWhiteSpace(Car.ImageUrl);
+
+    // Ör. "© Ad Soyad · CC BY-SA 4.0"
+    private string CreditText => string.Join(" · ",
+        new[] { string.IsNullOrWhiteSpace(Car.ImageCredit) ? null : $"© {Car.ImageCredit}", Car.ImageLicense }
+            .Where(part => !string.IsNullOrWhiteSpace(part)));
 
     protected override void OnParametersSet()
     {

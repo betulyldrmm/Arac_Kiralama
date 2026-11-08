@@ -2,7 +2,7 @@
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
-    padding: 1.1rem;
+    padding: var(--space);
     box-shadow: var(--shadow);
 }
 
@@ -15,10 +15,6 @@
     display: grid;
     gap: 0.3rem;
     margin-bottom: 0.9rem;
-}
-
-.error-slot {
-    min-height: 0;
 }
 
 /* Bir alanda birden fazla kural bozulursa yalnızca ilk hata mesajı gösterilsin.

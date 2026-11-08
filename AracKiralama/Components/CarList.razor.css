@@ -1,13 +1,13 @@
 .car-list {
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 270px minmax(0, 1fr);
     gap: 1.5rem;
     align-items: start;
 }
 
 .result-count {
     color: var(--color-muted);
-    font-weight: 600;
+    font-size: 0.925rem;
     margin-bottom: 0.75rem;
 }
 
@@ -16,17 +16,19 @@
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.25rem;
 }
 
+/* li esnek kutu olunca içindeki kart satırın tam yüksekliğini alır; kartlar eşit boyda olur. */
 .car-grid li {
     display: flex;
+    min-width: 0;
 }
 
 .empty {
     background: var(--color-surface);
-    border: 2px dashed var(--color-border);
+    border: 1px dashed var(--color-border-strong);
     border-radius: var(--radius);
     padding: 2rem 1.25rem;
     text-align: center;
@@ -44,6 +46,13 @@
 
 @media (max-width: 860px) {
     .car-list {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .car-grid {
+        grid-template-columns: minmax(0, 1fr);
     }
 }

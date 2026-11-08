@@ -4,7 +4,7 @@
 @inject RentalState State
 @inject NavigationManager Nav
 
-<PageTitle>@(car is null ? "Araç kirala" : $"{car.Brand} {car.Model} kirala") · Araç Kiralama</PageTitle>
+<PageTitle>@(car is null ? "Araç kirala" : $"{car.Brand} {car.Model} kirala") · Rota39</PageTitle>
 
 <a class="back-link" href="cars">← Araç listesine dön</a>
 
@@ -23,7 +23,7 @@ else if (car is null)
 {
     <div class="alert alert-error" role="alert">
         <h1>Araç bulunamadı</h1>
-        <p>"@Id" kimliğine sahip bir araç yok. Bağlantıyı kontrol edin veya listeden bir araç seçin.</p>
+        <p>"@Id" kodlu bir araç bulunamadı. Listeden bir araç seçebilirsiniz.</p>
         <a class="btn btn-primary" href="cars">Araçları görüntüle</a>
     </div>
 }
@@ -53,8 +53,7 @@ else
             @if (!car.IsAvailable)
             {
                 <div class="alert alert-warning" role="alert">
-                    <strong>Bu araç şu anda kiralamaya uygun değil.</strong>
-                    Kiralama işlemi kapalıdır; lütfen listeden başka bir araç seçin.
+                    <strong>Bu araç şu anda kiralanamaz.</strong> Lütfen başka bir araç seçin.
                 </div>
             }
 

@@ -4,45 +4,62 @@
     flex-direction: column;
 }
 
+/* Masaüstünde menü sayfanın üstünde sabit kalır.
+   Başlıkların menü altında kalmaması için app.css'te html { scroll-padding-top } tanımlıdır. */
 .site-header {
     position: sticky;
     top: 0;
     z-index: 10;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
+    background: var(--color-navy);
+    color: #fff;
 }
 
 .header-inner {
     max-width: 1200px;
+    min-height: var(--header-height);
     margin: 0 auto;
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    flex-wrap: wrap;
 }
 
-.logo {
+.brand {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    color: var(--color-text);
+    gap: 0.55rem;
+    color: #fff;
     text-decoration: none;
-    font-weight: 700;
-    font-size: 1.1rem;
 }
 
-.logo-mark {
-    display: grid;
-    place-items: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 10px;
-    background: var(--color-primary);
-    color: #fff;
-    font-size: 0.85rem;
-    letter-spacing: 0.04em;
+.brand-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    fill: #ff9a62; /* lacivert zeminde okunaklı turuncu tonu */
+    flex-shrink: 0;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.brand-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+}
+
+.brand-number {
+    color: #ff9a62; /* lacivert zeminde okunaklı turuncu tonu */
+}
+
+.brand-sub {
+    font-size: 0.75rem;
+    color: #c7d0de;
+    letter-spacing: 0.03em;
 }
 
 .main-nav {
@@ -52,21 +69,21 @@
 
 /* NavLink kendi <a> etiketini ürettiği için stil ::deep ile verilir. */
 .main-nav ::deep .nav-link {
-    padding: 0.5rem 0.9rem;
-    border-radius: 999px;
-    color: var(--color-muted);
+    display: inline-block;
+    padding: 0.5rem 0.8rem;
+    border-bottom: 3px solid transparent;
+    color: #dfe5ee;
     font-weight: 600;
     text-decoration: none;
 }
 
 .main-nav ::deep .nav-link:hover {
-    color: var(--color-text);
-    background: var(--color-surface-alt);
+    color: #fff;
 }
 
 .main-nav ::deep .nav-link.active {
-    color: var(--color-primary);
-    background: var(--color-primary-soft);
+    color: #fff;
+    border-bottom-color: #ff9a62;
 }
 
 .site-main {
@@ -74,13 +91,12 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1.5rem 1rem 3rem;
+    padding: 1.75rem 1rem 3rem;
 }
 
 .site-footer {
-    border-top: 1px solid var(--color-border);
-    background: var(--color-surface);
-    color: var(--color-muted);
+    background: var(--color-navy);
+    color: #c7d0de;
     font-size: 0.875rem;
     text-align: center;
     padding: 1rem;
@@ -90,13 +106,23 @@
     margin: 0;
 }
 
-@media (max-width: 480px) {
-    .logo-text {
-        font-size: 1rem;
+/* Mobilde menü sabit değildir; ekranın az olan yüksekliğini kaplamaz. */
+@media (max-width: 640px) {
+    .site-header {
+        position: static;
+    }
+
+    .header-inner {
+        flex-wrap: wrap;
+        gap: 0.25rem 1rem;
     }
 
     .main-nav ::deep .nav-link {
-        padding: 0.45rem 0.7rem;
+        padding: 0.45rem 0.6rem;
         font-size: 0.95rem;
+    }
+
+    .site-main {
+        padding-top: 1.25rem;
     }
 }

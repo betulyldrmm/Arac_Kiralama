@@ -3,21 +3,16 @@
 <article class="car-card @(Car.IsAvailable ? "" : "is-unavailable")">
     <div class="media">
         <CarImage Car="Car" />
-        <span class="badge badge-category">@Car.Category</span>
         @if (!Car.IsAvailable)
         {
-            <span class="badge badge-unavailable">Müsait değil</span>
+            <span class="badge-unavailable">Müsait değil</span>
         }
     </div>
 
     <div class="content">
-        <h3 class="title">@Car.Brand <span class="model">@Car.Model</span></h3>
-
-        <dl class="specs">
-            <div><dt>Yakıt</dt><dd>@Car.FuelType</dd></div>
-            <div><dt>Vites</dt><dd>@Car.Transmission</dd></div>
-            <div><dt>Koltuk</dt><dd>@Car.Seats</dd></div>
-        </dl>
+        <p class="category">@Car.Category</p>
+        <h3 class="title">@Car.Brand @Car.Model</h3>
+        <p class="specs">@Car.FuelType · @Car.Transmission · @Car.Seats koltuk</p>
 
         <div class="footer">
             <p class="price">
@@ -39,7 +34,7 @@
 
         @if (!Car.IsAvailable)
         {
-            <p id="@NoteId" class="unavailable-note">Bu araç şu anda kiralamaya uygun değil.</p>
+            <p id="@NoteId" class="unavailable-note">Şu anda kiralanamaz.</p>
         }
     </div>
 </article>
